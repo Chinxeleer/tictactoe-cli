@@ -1,19 +1,19 @@
 use colored::Colorize;
 pub fn display_board(grid: &mut Vec<char>) {
-    println!("{}", "-------------".green());
+    println!("\t\t\t{}", "-------------".green());
     println!(
-        "{} {} {} {} {} {} {}",
+        "\t\t\t{} {} {} {} {} {} {}",
         "|".green(),
         grid[0],
         "|".green(),
         grid[1],
         "|".green(),
-        grid[2],
+        grid[2].to_string(),
         "|".green()
     );
-    println!("{}", "-------------".green());
+    println!("\t\t\t{}", "-------------".green());
     println!(
-        "{} {} {} {} {} {} {}",
+        "\t\t\t{} {} {} {} {} {} {}",
         "|".green(),
         grid[3],
         "|".green(),
@@ -22,9 +22,9 @@ pub fn display_board(grid: &mut Vec<char>) {
         grid[5],
         "|".green()
     );
-    println!("{}", "-------------".green());
+    println!("\t\t\t{}", "-------------".green());
     println!(
-        "{} {} {} {} {} {} {}",
+        "\t\t\t{} {} {} {} {} {} {}",
         "|".green(),
         grid[6],
         "|".green(),
@@ -33,7 +33,7 @@ pub fn display_board(grid: &mut Vec<char>) {
         grid[8],
         "|".green()
     );
-    println!("{}", "-------------".green());
+    println!("\t\t\t{}", "-------------".green());
 }
 pub struct GameObj {
     pub x: char,
@@ -109,15 +109,36 @@ fn check_diagonals(grid: &Vec<char>) -> char {
     if first_diag {
         result = grid[0];
     } else if second_diag {
-        result = grid[3];
+        result = grid[2];
     } else {
         result = '-';
     }
 
     result
 }
+// return two things in the function
+// A bool to stop the game loop and a char for the winner
+pub fn check_winner(grid: &Vec<char>) -> (char, bool) {
+    let winner: char;
 
+    let end_game: bool;
 
+    if check_rows(grid) != '-' {
+        winner = check_rows(grid);
+        end_game = true;
+    } else if check_diagonals(grid) != '-' {
+        winner = check_diagonals(grid);
+        end_game = true;
+    } else if check_columns(grid) != '-' {
+        winner = check_columns(grid);
+        end_game = true;
+    } else {
+        winner = '-';
+        end_game = false;
+    }
+
+    (winner, end_game)
+}
 
 #[cfg(test)]
 mod tests {
@@ -149,5 +170,11 @@ mod tests {
         let grid = vec!['X', '-', 'X', '-', 'X', '-', 'X', '-', 'X'];
 
         assert_eq!('X', check_diagonals(&grid))
+    }
+
+    #[test]
+    fn winner_checker() {
+        let grid = vec!['X', '-', '-', 'X', '-', '-', '-', '-', '-'];
+        assert_eq!(('-', false), check_winner(&grid))
     }
 }
