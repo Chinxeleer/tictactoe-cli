@@ -15,6 +15,11 @@ fn main() {
 
     while running {
         // managing input
+        println!(
+            "\n\n\t\t\t{}'s turn\n\n",
+            current_player.to_string().yellow().bold()
+        );
+
         print!("Enter a number between 1-9: ");
 
         std::io::stdout().flush().unwrap();
@@ -48,11 +53,14 @@ fn main() {
             let (winner, end_game) = check_winner(&grid);
 
             if end_game {
-                println!("The winner is {}", winner);
+                println!("The winner is {} ", winner);
                 running = false;
+            } else if possible_moves.is_empty() {
+                println!("\n\n\t\t\t{}\n", "Tie".blue());
+                running = false;
+            } else {
+                ()
             }
-        } else if possible_moves.is_empty() {
-            println!("Tie");
         } else if index >= 10 {
             println!(
                 "{}",
